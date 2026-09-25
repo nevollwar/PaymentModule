@@ -36,7 +36,9 @@ namespace PaymentApp.Domain
             });
         }
 
-        //Пополнение счёта с лимитом
+        // Операция 2: Пополнение счёта с лимитом
+
+
         /// <summary>
         /// Проверка предусловий пополнения без побочных эффектов (для индикатора Pre).
         /// Возвращает описание первого нарушенного предусловия или null, если все выполнены.
@@ -91,6 +93,77 @@ namespace PaymentApp.Domain
 
             return new DepositResult(balanceBefore, account.Balance,
                 limitBefore, account.DailyLimitRemaining, amount, postconditionHolds);
+        }
+
+
+        //  Оплата услуг с комиссией
+      
+
+        /// <summary>Справочник доступных услуг: название → ставка комиссии (0..1).</summary>
+        public static readonly IReadOnlyDictionary<string, decimal> ServiceCommissions =
+            new Dictionary<string, decimal>
+            {
+                { "Интернет",           0.01m },
+                { "Мобильная связь",    0.02m },
+                { "Коммунальные услуги",0.015m },
+                { "Телевидение",        0.01m },
+            };
+
+        /// <summary>
+        /// Проверка предусловий оплаты услуги без побочных эффектов (для индикатора Pre).
+        /// </summary>
+        public string? FindServicePaymentPreViolation(Account? account, string? serviceName, decimal amount)
+        {
+            if (account == null)
+                return "счёт не выбран";
+
+            if (!accounts.Contains(account))
+                return "счёт не принадлежит платёжной системе";
+
+            if (string.IsNullOrWhiteSpace(serviceName) || !ServiceCommissions.ContainsKey(serviceName))
+                return "услуга не выбрана";
+
+            if (amount <= 0)
+                return "сумма должна быть больше 0";
+
+            decimal commission = Math.Round(amount * ServiceCommissions[serviceName], 2);
+            decimal total = amount + commission;
+
+            if (account.Balance < total)
+                return $"недостаточно средств: баланс {account.Balance:N2} < суммы+комиссии {total:N2}";
+
+            return null;
+        }
+
+        /// <summary>
+        /// Оплата услуги с комиссией.
+        /// Pre:  услуга выбрана ∈ справочника; amount > 0; account.Balance ≥ amount + commission.
+        /// Post: account.Balance' = account.Balance − (amount + commission); статус «Оплачено».
+        /// </summary>
+        public ServicePaymentResult PayService(Account account, string serviceName, decimal amount)
+        {
+            Guard.Requires(account != null, "Счёт не выбран");
+            Guard.Requires(accounts.Contains(account!), "Счёт не принадлежит платёжной системе");
+            Guard.Requires(!string.IsNullOrWhiteSpace(serviceName) && ServiceCommissions.ContainsKey(serviceName),
+                "Услуга не выбрана или не найдена в справочнике");
+            Guard.Requires(amount > 0, "Сумма платежа должна быть больше 0");
+
+            decimal commission = Math.Round(amount * ServiceCommissions[serviceName], 2);
+            decimal total = amount + commission;
+
+            Guard.Requires(account!.Balance >= total,
+                $"Недостаточно средств: баланс {account.Balance:N2} < суммы+комиссии {total:N2}");
+
+            decimal balanceBefore = account.Balance;
+
+            account.Withdraw(total);
+
+            bool postconditionHolds = account.Balance == balanceBefore - total;
+
+            Debug.Assert(postconditionHolds, "Нарушено постусловие оплаты услуги");
+
+            return new ServicePaymentResult(serviceName, balanceBefore, account.Balance,
+                amount, commission, total, postconditionHolds);
         }
 
         /// <summary>
