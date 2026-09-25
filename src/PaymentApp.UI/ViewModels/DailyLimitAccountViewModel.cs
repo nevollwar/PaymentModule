@@ -3,11 +3,11 @@ using PaymentApp.UI.Mvvm;
 
 namespace PaymentApp.UI.ViewModels
 {
-    /// <summary>
-    /// Обёртка над DailyLimitAccount для отображения в UI.
-    /// Дополнительно показывает лимиты.
-    /// </summary>
-    public class DailyLimitAccountViewModel : ViewModelBase
+    /// <summary>
+    /// Обёртка над DailyLimitAccount для отображения в UI.
+    /// Дополнительно показывает лимиты.
+    /// </summary>
+    public class DailyLimitAccountViewModel : ViewModelBase
     {
         public DailyLimitAccount Model { get; }
 
@@ -18,10 +18,10 @@ namespace PaymentApp.UI.ViewModels
         public decimal DailyLimitRemaining => Model.DailyLimitRemaining;
 
         public string DisplayName =>
-            $"{Number} — {Owner} ({Balance:N2} ₽)";
+          $"{Number} — {Owner} ({Balance:N2} ₽)";
 
         public string LimitInfo =>
-            $"Разовый лимит: {SingleDepositLimit:N2} ₽ | Остаток дневного: {DailyLimitRemaining:N2} ₽";
+          $"Разовый лимит: {SingleDepositLimit:N2} ₽ | Остаток дневного: {DailyLimitRemaining:N2} ₽";
 
         public DailyLimitAccountViewModel(DailyLimitAccount model)
         {

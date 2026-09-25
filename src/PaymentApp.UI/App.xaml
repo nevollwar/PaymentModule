@@ -10,5 +10,11 @@
         <DataTemplate DataType="{x:Type vm:TransferOperationViewModel}">
             <views:TransferView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DepositOperationViewModel}">
+            <views:DepositView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ServicePaymentOperationViewModel}">
+            <views:ServicePaymentView/>
+        </DataTemplate>
     </Application.Resources>
 </Application>

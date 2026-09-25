@@ -3,10 +3,10 @@ using PaymentApp.UI.Mvvm;
 
 namespace PaymentApp.UI.ViewModels
 {
-    /// <summary>
-    /// Обёртка над доменным счётом, чтобы UI видел изменение баланса
-    /// </summary>
-    public class AccountViewModel : ViewModelBase
+    /// <summary>
+    /// Обёртка над доменным счётом, чтобы UI видел изменение баланса
+    /// </summary>
+    public class AccountViewModel : ViewModelBase
     {
         public Account Model { get; }
 

@@ -16,16 +16,18 @@ namespace PaymentApp.UI.ViewModels
             set => SetField(ref selectedOperation, value);
         }
 
-        // Общая платёжная система для всех операций
-        public Bank Bank { get; } = Bank.CreateDemo();
+        // Общая платёжная система для всех операций
+        public Bank Bank { get; } = Bank.CreateDemo();
 
         public MainViewModel()
         {
             Operations = new ObservableCollection<OperationViewModelBase>();
-            // Сюда Чел 2, Чел 3 и Чел 4 добавят свои операции:
-            Operations.Add(new TransferOperationViewModel(Bank));
-            // Operations.Add(new DepositOperationViewModel());
-            // Operations.Add(new ServicePaymentViewModel());
+            // Операция 1: Перевод со счёта на счёт
+            Operations.Add(new TransferOperationViewModel(Bank));
+            // Операция 2: Пополнение счёта с лимитом
+            Operations.Add(new DepositOperationViewModel(Bank));
+            // Операция 3: Оплата услуг с комиссией
+            Operations.Add(new ServicePaymentOperationViewModel(Bank));
         }
     }
 }
