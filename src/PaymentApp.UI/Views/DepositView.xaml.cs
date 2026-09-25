@@ -18,7 +18,7 @@ namespace PaymentApp.UI.Views
     /// <summary>
     /// Логика взаимодействия для DepositView.xaml
     /// </summary>
-    public partial class DepositView : Page
+    public partial class DepositView : UserControl
     {
         public DepositView()
         {
