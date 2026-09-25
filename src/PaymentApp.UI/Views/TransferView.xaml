@@ -1,0 +1,71 @@
+<UserControl x:Class="PaymentApp.UI.Views.TransferView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <!-- Панель ввода параметров -->
+            <GroupBox Header="Параметры перевода" Padding="8" Margin="0,0,0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Счёт отправителя:" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,3"
+                              ItemsSource="{Binding Accounts}"
+                              SelectedItem="{Binding FromAccount}"
+                              DisplayMemberPath="DisplayName"/>
+
+                    <TextBlock Grid.Row="1" Text="Счёт получателя:" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,3"
+                              ItemsSource="{Binding Accounts}"
+                              SelectedItem="{Binding ToAccount}"
+                              DisplayMemberPath="DisplayName"/>
+
+                    <TextBlock Grid.Row="2" Text="Сумма, ₽:" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3" Width="160" HorizontalAlignment="Left"
+                             Text="{Binding AmountText, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Button Grid.Row="3" Grid.Column="1" Content="Выполнить" Margin="0,8,0,0"
+                            Padding="16,5" HorizontalAlignment="Left"
+                            Command="{Binding ExecuteCommand}"/>
+                </Grid>
+            </GroupBox>
+
+            <!-- Состояние системы: видно эффект перевода и инвариант суммы балансов -->
+            <GroupBox Header="Счета системы" Padding="8" Margin="0,0,0,10">
+                <StackPanel>
+                    <ListView ItemsSource="{Binding Accounts}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Счёт" Width="100" DisplayMemberBinding="{Binding Number}"/>
+                                <GridViewColumn Header="Владелец" Width="140" DisplayMemberBinding="{Binding Owner}"/>
+                                <GridViewColumn Header="Баланс, ₽" Width="120" DisplayMemberBinding="{Binding Balance, StringFormat=N2}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <TextBlock Margin="0,6,0,0">
+                        <Run Text="Сумма балансов системы:"/>
+                        <Run Text="{Binding TotalBalanceText, Mode=OneWay}" FontWeight="Bold"/>
+                    </TextBlock>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Результат последнего перевода" Padding="8" Margin="0,0,0,10">
+                <TextBlock Text="{Binding LastResultText}" FontFamily="Consolas" TextWrapping="Wrap"/>
+            </GroupBox>
+
+            <GroupBox Header="Журнал операций" Padding="8">
+                <ListBox ItemsSource="{Binding JournalLines}" MinHeight="40" MaxHeight="120" FontFamily="Consolas"/>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

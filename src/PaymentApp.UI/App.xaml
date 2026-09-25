@@ -2,8 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PaymentApp.UI"
+             xmlns:vm="clr-namespace:PaymentApp.UI.ViewModels"
+             xmlns:views="clr-namespace:PaymentApp.UI.Views"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <!-- Карточки операций: ContentControl в MainWindow подбирает шаблон по типу ViewModel -->
+        <DataTemplate DataType="{x:Type vm:TransferOperationViewModel}">
+            <views:TransferView/>
+        </DataTemplate>
     </Application.Resources>
 </Application>
