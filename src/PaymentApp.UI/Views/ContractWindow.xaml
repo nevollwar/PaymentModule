@@ -1,0 +1,44 @@
+﻿<Window x:Class="PaymentApp.UI.Views.ContractWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Спецификация контракта" Height="500" Width="600"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="OperationTitleText" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel>
+                <GroupBox Header="Предусловия (Pre)" Margin="0,0,0,8" Padding="6">
+                    <TextBlock x:Name="PreText" TextWrapping="Wrap" FontFamily="Consolas" Foreground="#005FB8"/>
+                </GroupBox>
+
+                <GroupBox Header="Постусловия (Post)" Margin="0,0,0,8" Padding="6">
+                    <TextBlock x:Name="PostText" TextWrapping="Wrap" FontFamily="Consolas" Foreground="#0E700E"/>
+                </GroupBox>
+
+                <GroupBox Header="Эффекты и исключения" Margin="0,0,0,8" Padding="6">
+                    <TextBlock x:Name="EffectsText" TextWrapping="Wrap"/>
+                </GroupBox>
+
+                <GroupBox Header="Граничные примеры" Padding="6">
+                    <StackPanel>
+                        <TextBlock Text="Валидный вход:" FontWeight="Bold"/>
+                        <TextBlock x:Name="ValidExampleText" Margin="0,2,0,6" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Невалидный вход:" FontWeight="Bold"/>
+                        <TextBlock x:Name="InvalidExampleText" TextWrapping="Wrap" Foreground="#D13438"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button Grid.Row="2" Content="Закрыть" Width="100" HorizontalAlignment="Right" 
+                Margin="0,10,0,0" Padding="5" IsDefault="True" Click="CloseButton_Click"/>
+    </Grid>
+</Window>
