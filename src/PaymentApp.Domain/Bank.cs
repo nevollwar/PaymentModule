@@ -27,12 +27,70 @@ namespace PaymentApp.Domain
 
         public static Bank CreateDemo()
         {
-            return new Bank(new[]
+            return new Bank(new Account[]
             {
                 new Account("40817-001", "Иванов И.И.", 10_000m),
                 new Account("40817-002", "Петров П.П.", 2_500m),
-                new Account("40817-003", "Сидорова А.А.", 0m)
+                new DailyLimitAccount("40817-003", "Сидорова А.А.", 0m,
+                    singleDepositLimit: 5_000m, dailyLimitRemaining: 15_000m)
             });
+        }
+
+        //Пополнение счёта с лимитом
+        /// <summary>
+        /// Проверка предусловий пополнения без побочных эффектов (для индикатора Pre).
+        /// Возвращает описание первого нарушенного предусловия или null, если все выполнены.
+        /// </summary>
+        public string? FindDepositPreViolation(DailyLimitAccount? account, decimal amount)
+        {
+            if (account == null)
+                return "счёт не выбран";
+
+            if (!accounts.Contains(account))
+                return "счёт не принадлежит платёжной системе";
+
+            if (amount <= 0)
+                return "сумма должна быть больше 0";
+
+            if (amount > account.SingleDepositLimit)
+                return $"сумма {amount:N2} превышает разовый лимит {account.SingleDepositLimit:N2}";
+
+            if (amount > account.DailyLimitRemaining)
+                return $"сумма {amount:N2} превышает остаток дневного лимита {account.DailyLimitRemaining:N2}";
+
+            return null;
+        }
+
+        /// <summary>
+        /// Пополнение счёта с дневным лимитом.
+        /// Pre:  amount > 0; amount ≤ account.SingleDepositLimit; amount ≤ account.DailyLimitRemaining.
+        /// Post: account.Balance' = account.Balance + amount;
+        ///       account.DailyLimitRemaining' = account.DailyLimitRemaining − amount.
+        /// </summary>
+        public DepositResult Deposit(DailyLimitAccount account, decimal amount)
+        {
+            Guard.Requires(account != null, "Счёт не выбран");
+            Guard.Requires(accounts.Contains(account!), "Счёт не принадлежит платёжной системе");
+            Guard.Requires(amount > 0, "Сумма пополнения должна быть больше 0");
+            Guard.Requires(amount <= account!.SingleDepositLimit,
+                $"Сумма {amount:N2} превышает разовый лимит {account.SingleDepositLimit:N2}");
+            Guard.Requires(amount <= account.DailyLimitRemaining,
+                $"Сумма {amount:N2} превышает остаток дневного лимита {account.DailyLimitRemaining:N2}");
+
+            decimal balanceBefore = account.Balance;
+            decimal limitBefore = account.DailyLimitRemaining;
+
+            account.Deposit(amount);
+            account.ConsumeDailyLimit(amount);
+
+            bool postconditionHolds =
+                account.Balance == balanceBefore + amount &&
+                account.DailyLimitRemaining == limitBefore - amount;
+
+            Debug.Assert(postconditionHolds, "Нарушено постусловие пополнения");
+
+            return new DepositResult(balanceBefore, account.Balance,
+                limitBefore, account.DailyLimitRemaining, amount, postconditionHolds);
         }
 
         /// <summary>
