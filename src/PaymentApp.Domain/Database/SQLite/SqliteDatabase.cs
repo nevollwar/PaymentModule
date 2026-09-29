@@ -14,20 +14,23 @@ namespace PaymentApp.Domain.Database.SQLite
     /// </summary>
     public class SqliteDatabase : IDatabase
     {
-        private readonly string filePath;
-        private SqliteConnection connection;
+        private readonly string dataSource;
+        private readonly ISchemaInitializer? initializer;
+        private SqliteConnection? connection;
+        private bool isInitialized;
 
         /// <summary>
         /// Конструктор для создания подключения к базе данных SQLite.
         /// </summary>
-        /// <param name="filePath">Путь к файлу базы данных. Не может быть null или пустой</param>
+        /// <param name="dataSource">Путь к базе данных. Не может быть null или пустой</param>
         /// <exception cref="ArgumentException">Если аргумент connectionString == null или пустой</exception>
-        public SqliteDatabase(string filePath)
+        public SqliteDatabase(string dataSource, ISchemaInitializer? initializer = null)
         {
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(dataSource))
                 throw new ArgumentException("Строка подключения не может быть пустой или равной null")
 
-            this.filePath = filePath;
+            this.dataSource = dataSource;
+            this.initializer = initializer ?? new SqliteSchemaInitialier();
         }
 
         /// <summary>
@@ -35,8 +38,7 @@ namespace PaymentApp.Domain.Database.SQLite
         /// </summary>
         public void Close()
         {
-            if (connection != null)
-                connection.Close();
+            connection?.Close();
         }
 
         /// <summary>
@@ -44,8 +46,7 @@ namespace PaymentApp.Domain.Database.SQLite
         /// </summary>
         public void Dispose()
         {
-            if (connection != null)
-                connection.Dispose();
+            connection?.Dispose();
 
             connection = null;
         }
@@ -110,10 +111,16 @@ namespace PaymentApp.Domain.Database.SQLite
         public void Open()
         {
             if (connection == null)
-                connection = new SqliteConnection(filePath);
+                connection = new SqliteConnection(dataSource);
 
             if (connection.State != System.Data.ConnectionState.Open)
                 connection.Open();
+
+            if (!isInitialized && initializer != null)
+            {
+                isInitialized = true;
+                initializer.Initialize(this);
+            }
         }
 
         /// <summary>

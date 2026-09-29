@@ -14,6 +14,6 @@ namespace PaymentApp.Domain.Database
         /// <summary>
         /// Уникальный идентификатор сущности.
         /// </summary>
-        long Id { get; set; }
+        public long Id { get; set; }
     }
 }
