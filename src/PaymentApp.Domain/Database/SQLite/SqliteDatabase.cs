@@ -27,7 +27,7 @@ namespace PaymentApp.Domain.Database.SQLite
         public SqliteDatabase(string dataSource, ISchemaInitializer? initializer = null)
         {
             if (string.IsNullOrEmpty(dataSource))
-                throw new ArgumentException("Строка подключения не может быть пустой или равной null")
+                throw new ArgumentException("Строка подключения не может быть пустой или равной null");
 
             this.dataSource = dataSource;
             this.initializer = initializer ?? new SqliteSchemaInitialier();
