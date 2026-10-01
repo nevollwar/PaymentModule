@@ -43,7 +43,7 @@ namespace PaymentApp.Domain
         /// Проверка предусловий пополнения без побочных эффектов (для индикатора Pre).
         /// Возвращает описание первого нарушенного предусловия или null, если все выполнены.
         /// </summary>
-        public string? FindDepositPreViolation(DailyLimitAccount? account, decimal amount)
+        public virtual string? FindDepositPreViolation(DailyLimitAccount? account, decimal amount)
         {
             if (account == null)
                 return "счёт не выбран";
@@ -69,7 +69,7 @@ namespace PaymentApp.Domain
         /// Post: account.Balance' = account.Balance + amount;
         ///       account.DailyLimitRemaining' = account.DailyLimitRemaining − amount.
         /// </summary>
-        public DepositResult Deposit(DailyLimitAccount account, decimal amount)
+        public virtual DepositResult Deposit(DailyLimitAccount account, decimal amount)
         {
             Guard.Requires(account != null, "Счёт не выбран");
             Guard.Requires(accounts.Contains(account!), "Счёт не принадлежит платёжной системе");
@@ -95,9 +95,8 @@ namespace PaymentApp.Domain
                 limitBefore, account.DailyLimitRemaining, amount, postconditionHolds);
         }
 
+        // Оплата услуг с комиссией
 
-        //  Оплата услуг с комиссией
-      
 
         /// <summary>Справочник доступных услуг: название → ставка комиссии (0..1).</summary>
         public static readonly IReadOnlyDictionary<string, decimal> ServiceCommissions =
@@ -112,7 +111,7 @@ namespace PaymentApp.Domain
         /// <summary>
         /// Проверка предусловий оплаты услуги без побочных эффектов (для индикатора Pre).
         /// </summary>
-        public string? FindServicePaymentPreViolation(Account? account, string? serviceName, decimal amount)
+        public virtual string? FindServicePaymentPreViolation(Account? account, string? serviceName, decimal amount)
         {
             if (account == null)
                 return "счёт не выбран";
@@ -140,7 +139,7 @@ namespace PaymentApp.Domain
         /// Pre:  услуга выбрана ∈ справочника; amount > 0; account.Balance ≥ amount + commission.
         /// Post: account.Balance' = account.Balance − (amount + commission); статус «Оплачено».
         /// </summary>
-        public ServicePaymentResult PayService(Account account, string serviceName, decimal amount)
+        public virtual ServicePaymentResult PayService(Account account, string serviceName, decimal amount)
         {
             Guard.Requires(account != null, "Счёт не выбран");
             Guard.Requires(accounts.Contains(account!), "Счёт не принадлежит платёжной системе");
@@ -170,7 +169,7 @@ namespace PaymentApp.Domain
         /// Проверка предусловий перевода без побочных эффектов (для индикатора Pre).
         /// Возвращает описание первого нарушенного предусловия или null, если все выполнены.
         /// </summary>
-        public string? FindTransferPreViolation(Account? from, Account? to, decimal amount)
+        public virtual string? FindTransferPreViolation(Account? from, Account? to, decimal amount)
         {
             if (from == null || to == null)
             {
@@ -201,7 +200,7 @@ namespace PaymentApp.Domain
         /// Post: from.Balance уменьшен на amount; to.Balance увеличен на amount;
         ///       в журнал добавлена запись; сумма балансов системы сохранена.
         /// </summary>
-        public TransferResult Transfer(Account from, Account to, decimal amount)
+        public virtual TransferResult Transfer(Account from, Account to, decimal amount)
         {
             Guard.Requires(from != null && to != null, "Не выбран счёт отправителя или получателя");
             Guard.Requires(accounts.Contains(from!) && accounts.Contains(to!), "Счёт не принадлежит платёжной системе");
