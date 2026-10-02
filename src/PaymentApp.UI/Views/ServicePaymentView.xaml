@@ -1,70 +1,193 @@
 ﻿<UserControl x:Class="PaymentApp.UI.Views.ServicePaymentView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Левая колонка: форма оплаты (42%) -->
+            <ColumnDefinition Width="42*"/>
+            <!-- Правая колонка: счета и тарифы комиссий (58%) -->
+            <ColumnDefinition Width="58*"/>
+        </Grid.ColumnDefinitions>
 
-            <!-- Параметры оплаты -->
-            <GroupBox Header="Параметры оплаты услуги" Padding="8" Margin="0,0,0,10">
+        <!-- ЛЕВАЯ КОЛОНКА: Параметры оплаты -->
+        <Border Grid.Column="0" 
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="16"
+                Margin="0,0,14,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Параметры платежа" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,14"/>
+
+                    <!-- Счёт списания -->
+                    <TextBlock Text="Счёт списания" FontWeight="Medium" FontSize="12" Margin="0,0,0,4"/>
+                    <ComboBox ItemsSource="{Binding Accounts}" 
+                              SelectedItem="{Binding SelectedAccount}" 
+                              DisplayMemberPath="DisplayName"
+                              HorizontalAlignment="Stretch"
+                              Margin="0,0,0,12"/>
+
+                    <!-- Выбор услуги -->
+                    <TextBlock Text="Категория услуги" FontWeight="Medium" FontSize="12" Margin="0,0,0,4"/>
+                    <ComboBox ItemsSource="{Binding Services}" 
+                              SelectedItem="{Binding SelectedService}"
+                              HorizontalAlignment="Stretch"
+                              Margin="0,0,0,12"/>
+
+                    <!-- Сумма платежа -->
+                    <TextBlock Text="Сумма платежа, ₽" FontWeight="Medium" FontSize="12" Margin="0,0,0,4"/>
+                    <ui:TextBox Text="{Binding AmountText, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="Например: 2000,00"
+                                FontSize="13"
+                                ClearButtonEnabled="True"
+                                HorizontalAlignment="Stretch"
+                                Margin="0,0,0,10"/>
+
+                    <!-- Плашка автоматического расчёта комиссии -->
+                    <Border Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12,8"
+                            Margin="0,0,0,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" 
+                                       Text="Комиссия / к списанию:" 
+                                       FontSize="11" 
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock Grid.Column="1" 
+                                       Text="{Binding CommissionPreviewText}" 
+                                       FontWeight="Bold" 
+                                       FontSize="12" 
+                                       HorizontalAlignment="Right"
+                                       Foreground="#005FB8"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Кнопка оплаты -->
+                    <ui:Button Content="Оплатить услугу"
+                               Appearance="Primary"
+                               Icon="{ui:SymbolIcon ReceiptMoney24}"
+                               Command="{Binding ExecuteCommand}"
+                               HorizontalAlignment="Stretch"
+                               Padding="0,11"/>
+                </StackPanel>
+
+                <!-- Чек / Результат платежа -->
+                <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                    <TextBlock Text="Результат операции" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                    <Border Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <TextBlock Text="{Binding LastResultText}" 
+                                   FontFamily="Consolas" 
+                                   FontSize="12" 
+                                   TextWrapping="Wrap"
+                                   LineHeight="18"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ПРАВАЯ КОЛОНКА: Счета и Справочник комиссий -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <!-- Верхняя часть: таблица счетов -->
+                <RowDefinition Height="58*"/>
+                <!-- Нижняя часть: справочник комиссий -->
+                <RowDefinition Height="42*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Счета системы -->
+            <Border Grid.Row="0" 
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="16"
+                    Margin="0,0,0,12">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Счёт списания:" VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,3"
-                              ItemsSource="{Binding Accounts}"
-                              SelectedItem="{Binding SelectedAccount}"
-                              DisplayMemberPath="DisplayName"/>
+                    <TextBlock Grid.Row="0" 
+                               Text="Счета платёжной системы" 
+                               FontSize="15" 
+                               FontWeight="SemiBold" 
+                               Margin="0,0,0,10"/>
 
-                    <TextBlock Grid.Row="1" Text="Услуга:" VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,3"
-                              ItemsSource="{Binding Services}"
-                              SelectedItem="{Binding SelectedService}"/>
-
-                    <TextBlock Grid.Row="2" Text="Сумма платежа, ₽:" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3" Width="160" HorizontalAlignment="Left"
-                             Text="{Binding AmountText, UpdateSourceTrigger=PropertyChanged}"/>
-
-                    <!-- Превью комиссии -->
-                    <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,2,0,4"
-                               FontStyle="Italic" FontSize="11" Foreground="#555">
-                        <Run Text="Комиссия / итого: "/>
-                        <Run Text="{Binding CommissionPreviewText, Mode=OneWay}" FontWeight="SemiBold"/>
-                    </TextBlock>
-
-                    <Button Grid.Row="4" Grid.Column="1" Content="Оплатить" Margin="0,6,0,0"
-                            Padding="16,5" HorizontalAlignment="Left"
-                            Command="{Binding ExecuteCommand}"/>
+                    <ListView Grid.Row="1" 
+                              ItemsSource="{Binding Accounts}" 
+                              BorderThickness="0" 
+                              Background="Transparent">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Номер счёта" Width="130" DisplayMemberBinding="{Binding Number}"/>
+                                <GridViewColumn Header="Владелец" Width="160" DisplayMemberBinding="{Binding Owner}"/>
+                                <GridViewColumn Header="Баланс" Width="130" DisplayMemberBinding="{Binding Balance, StringFormat={}{0:N2} ₽}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </Grid>
-            </GroupBox>
+            </Border>
 
-            <!-- Результат последней оплаты -->
-            <GroupBox Header="Результат последней оплаты" Padding="8" Margin="0,0,0,10">
-                <TextBlock Text="{Binding LastResultText}" FontFamily="Consolas" TextWrapping="Wrap"/>
-            </GroupBox>
+            <!-- Справочник комиссий по контракту -->
+            <Border Grid.Row="1" 
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="16">
+                <StackPanel>
+                    <TextBlock Text="Тарифы комиссий по видам услуг" 
+                               FontSize="14" 
+                               FontWeight="SemiBold" 
+                               Margin="0,0,0,8"/>
 
-            <!-- Текущее состояние счетов -->
-            <GroupBox Header="Счета системы" Padding="8">
-                <ListView ItemsSource="{Binding Accounts}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Счёт"    Width="100" DisplayMemberBinding="{Binding Number}"/>
-                            <GridViewColumn Header="Владелец" Width="140" DisplayMemberBinding="{Binding Owner}"/>
-                            <GridViewColumn Header="Баланс, ₽" Width="120" DisplayMemberBinding="{Binding Balance, StringFormat=N2}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </GroupBox>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-        </StackPanel>
-    </ScrollViewer>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="• Мобильная связь: 2.0%" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,2"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="• Коммунальные услуги (ЖКХ): 1.5%" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,2"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="• Интернет: 1.0%" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,2"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="• Телевидение: 1.0%" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,2"/>
+                    </Grid>
+
+                    <Border Background="{DynamicResource ControlFillColorSecondaryBrush}" 
+                            CornerRadius="6" 
+                            Padding="10,8">
+                        <TextBlock Text="Предусловие оплаты: Баланс счёта ≥ Сумма + Комиссия. При нехватке средств на списание комиссии операция блокируется до отправки."
+                                   FontSize="11"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
 </UserControl>
