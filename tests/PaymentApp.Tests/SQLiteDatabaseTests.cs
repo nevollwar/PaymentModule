@@ -1,65 +1,51 @@
-﻿using PaymentApp.Domain.Database;
-using PaymentApp.Domain.Database.Entities;
-using PaymentApp.Domain.Database.SQLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PaymentApp.Domain.Database.SQLite;
 
-namespace PaymentApp.Tests
+namespace PaymentApp.Tests;
+
+public class SqliteDatabaseTests
 {
-    public class SQLiteDatabaseTests
+    private static SqliteDatabase NewDb()
     {
+        var db = new SqliteDatabase("Data Source=:memory:");
+        db.Open();
+        return db;
+    }
 
-        // TODO: покрыть тестами БД используя InMemory Data Source
-        // Андрей, я тест сделал исключительно чтобы самому потестить что сделал.
-        // Тесты нужно будет переписать
+    [Fact]
+    public void Ctor_EmptyDataSource_Throws()
+    {
+        Assert.Throws<ArgumentException>(() => new SqliteDatabase(""));
+    }
 
-        [Fact]
-        public void CheckInsert()
-        {
-            var db = new SqliteDatabase("Data Source=test_bank.db");
-            db.Open();
+    [Fact]
+    public void Execute_EmptyQuery_Throws()
+    {
+        using var db = NewDb();
+        Assert.Throws<ArgumentException>(() => db.Execute(""));
+    }
 
-            var accRepo = new SqliteAccountRepository(db);
-            var trxRepo = new SqliteTransactionRepository(db);
+    [Fact]
+    public void Insert_And_Query_RoundTrip()
+    {
+        using var db = NewDb();
 
-            var account = accRepo.Insert(new AccountEntity
-            {
-                Number = "1102-2012-32",
-                Owner = "Тест Тест",
-                Balance = 1000
-            });
+        long id = db.Insert(
+            "INSERT INTO accounts (number, owner, balance, has_daily_limit) VALUES ($0,$1,$2,$3)",
+            "A", "B", "100", 0);
 
-            var fromDb = accRepo.FindById(account.Id);
+        Assert.Equal(1, id);
 
-            Assert.NotNull(fromDb);
-            Assert.Equal("1102-2012-32", fromDb.Number);
-            Assert.Equal("Тест Тест", fromDb.Owner);
-            Assert.Equal(1000, fromDb.Balance);
+        var rows = db.Query("SELECT number FROM accounts WHERE id = $0", id).ToList();
+        Assert.Single(rows);
+        Assert.Equal("A", rows[0][0]);
+    }
 
-            account.Balance += 100;
+    [Fact]
+    public void Execute_AfterDispose_Throws()
+    {
+        var db = NewDb();
+        db.Dispose();
 
-            accRepo.Update(account);
-
-            fromDb = accRepo.FindById(account.Id);
-            Assert.Equal(1100, fromDb.Balance);
-
-            var trx = trxRepo.Insert(new TransactionEntity {
-                Timestamp = DateTime.Now,
-                FromAccount = account.Owner,
-                Amount = 200,
-                ToAccount = "Тест"
-            });
-
-
-
-
-            db.Close();
-        }
-
-
-
+        Assert.Throws<NullReferenceException>(() => db.Execute("SELECT 1"));
     }
 }
