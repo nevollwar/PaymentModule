@@ -19,7 +19,7 @@
 
         <!-- Системные кнопки окна (свернуть / развернуть / закрыть) -->
         <ui:TitleBar Grid.Row="0"
-                     Title="Платёжный модуль • Банковские контракты"
+                     Title="Платёжный модуль"
                      ShowMinimize="True"
                      ShowMaximize="True"
                      ShowClose="True" />
