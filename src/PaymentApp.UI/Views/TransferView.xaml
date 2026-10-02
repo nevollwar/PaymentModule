@@ -10,7 +10,7 @@
             <ColumnDefinition Width="58*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- ЛЕВАЯ КОЛОНКА: Параметры перевода -->
+        <!-- Левая колонка: Параметры перевода -->
         <Border Grid.Column="0" 
                 Background="{DynamicResource ControlFillColorDefaultBrush}"
                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -80,7 +80,7 @@
             </Grid>
         </Border>
 
-        <!-- ПРАВАЯ КОЛОНКА: Счета и журнал -->
+        <!-- Правая колонка: Счета и журнал -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <!-- Верхняя часть: список счетов -->
@@ -116,7 +116,7 @@
                         </ListView.View>
                     </ListView>
 
-                    <!-- Плашка инварианта системы -->
+                    <!-- Общий баланс системы -->
                     <Border Grid.Row="2" 
                             Background="{DynamicResource ControlFillColorSecondaryBrush}"
                             BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -125,7 +125,7 @@
                             Padding="12,8"
                             Margin="0,8,0,0">
                         <DockPanel>
-                            <TextBlock Text="Сумма балансов системы (инвариант):" 
+                            <TextBlock Text="Сумма балансов системы:" 
                                        VerticalAlignment="Center" 
                                        FontSize="12"
                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>

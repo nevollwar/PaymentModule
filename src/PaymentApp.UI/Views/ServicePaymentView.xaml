@@ -10,7 +10,7 @@
             <ColumnDefinition Width="58*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- ЛЕВАЯ КОЛОНКА: Параметры оплаты -->
+        <!-- Левая колонка: Параметры оплаты -->
         <Border Grid.Column="0" 
                 Background="{DynamicResource ControlFillColorDefaultBrush}"
                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -105,7 +105,7 @@
             </Grid>
         </Border>
 
-        <!-- ПРАВАЯ КОЛОНКА: Счета и Справочник комиссий -->
+        <!-- Правая колонка: Счета и Справочник комиссий -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <!-- Верхняя часть: таблица счетов -->

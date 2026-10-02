@@ -10,7 +10,7 @@
             <ColumnDefinition Width="58*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- ЛЕВАЯ КОЛОНКА: Форма пополнения -->
+        <!-- Левая колонка: Форма пополнения -->
         <Border Grid.Column="0" 
                 Background="{DynamicResource ControlFillColorDefaultBrush}"
                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -92,7 +92,7 @@
             </Grid>
         </Border>
 
-        <!-- ПРАВАЯ КОЛОНКА: Счета с лимитами и справка -->
+        <!-- Правая колонка: Счета с лимитами и справка -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <!-- Верхняя часть: таблица счетов -->

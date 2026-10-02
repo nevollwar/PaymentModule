@@ -112,7 +112,7 @@
                 </Grid>
             </Border>
 
-            <!-- ПРАВАЯ ОБЛАСТЬ: Шапка + Контракт + Экран операции -->
+            <!-- Правая область: Шапка + Контракт + Экран операции -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <!-- 0: Заголовок экрана и кнопка контракта -->
@@ -148,7 +148,7 @@
                                Padding="16,8"/>
                 </Grid>
 
-                <!-- ЕДИНЫЙ МОНИТОР КОНТРАКТА -->
+                <!-- Единый монитор контракта -->
                 <Border Grid.Row="1" 
                         Background="{DynamicResource ControlFillColorDefaultBrush}"
                         BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -257,11 +257,6 @@
             <DockPanel LastChildFill="False">
                 <TextBlock Text="● Режим контрактного контроля: активен" 
                            FontSize="11" Foreground="#188038" VerticalAlignment="Center"/>
-                <TextBlock DockPanel.Dock="Right" 
-                           Text="Лабораторная работа №1 • Платёжный модуль" 
-                           FontSize="11" 
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
             </DockPanel>
         </Border>
     </Grid>
