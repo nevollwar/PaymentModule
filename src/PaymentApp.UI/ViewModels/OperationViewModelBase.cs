@@ -38,7 +38,6 @@ namespace PaymentApp.UI.ViewModels
             ExecuteCommand = new RelayCommand(RunOperation, () => IsPreValid);
         }
 
-        // Челы 2, 3, 4 будут переопределять эти два метода под свои операции
         public abstract void CheckPreconditions();
         public abstract void Execute();
 
