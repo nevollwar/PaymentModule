@@ -8,18 +8,20 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Подключение темы (Light или Dark) и стили всех элементов WPF-UI -->
+                <!-- Подключение темы WPF-UI (светлая тема) и базовых стилей контролов -->
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Карточки операций: ContentControl в MainWindow подбирает шаблон по типу ViewModel -->
+            <!-- Привязка моделей представлений к конкретным экранам операций -->
             <DataTemplate DataType="{x:Type vm:TransferOperationViewModel}">
                 <views:TransferView/>
             </DataTemplate>
+
             <DataTemplate DataType="{x:Type vm:DepositOperationViewModel}">
                 <views:DepositView/>
             </DataTemplate>
+
             <DataTemplate DataType="{x:Type vm:ServicePaymentOperationViewModel}">
                 <views:ServicePaymentView/>
             </DataTemplate>
