@@ -4,7 +4,7 @@ using PaymentApp.UI.Views;
 
 namespace PaymentApp.UI
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
     {
         public MainWindow()
         {
@@ -16,7 +16,7 @@ namespace PaymentApp.UI
             MainViewModel? viewModel = DataContext as MainViewModel;
             if (viewModel?.SelectedOperation == null)
             {
-                MessageBox.Show("Сначала выберите операцию из списка слева.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show("Сначала выберите операцию из списка слева.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
