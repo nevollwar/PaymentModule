@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         Title="Платёжный модуль"
+        Icon="PaymentModule.ico"
         Height="820" Width="1200"
         MinHeight="720" MinWidth="1050"
         WindowStartupLocation="CenterScreen">
@@ -31,7 +32,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ЛЕВАЯ ПАНЕЛЬ: Меню операций -->
+            <!-- Левая панель: Меню операций -->
             <Border Grid.Column="0" 
                     Background="{DynamicResource ControlFillColorDefaultBrush}"
                     BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"

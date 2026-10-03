@@ -6,8 +6,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+	<ApplicationIcon>PaymentModule.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+	  <Resource Include="PaymentModule.ico" />
+  </ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="WPF-UI" Version="4.3.0" />
   </ItemGroup>
